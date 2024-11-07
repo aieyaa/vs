@@ -1,0 +1,54 @@
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+
+.bouton {
+  background-color: rgb(147, 172, 179);
+  padding: 11px 25px; 
+  margin-top: 5px ;
+
+}
+
+
+/* From Uiverse.io by G4b413l */ 
+.group {
+  position: relative;
+ }
+ 
+ .input {
+  font-size: 16px;
+  padding: 10px 10px 10px 10px;
+  display: block;
+  width: 390px;
+  height: 10px;
+  border: none;
+  border-bottom: 1px solid  #515151;
+  background: transparent;
+ }
+ 
+ .input:focus {
+  outline: none;
+ }
+ 
+ label {
+  color: #999;
+  font-size: 18px;
+  font-weight: normal;
+  position: absolute;
+  pointer-events: none;
+  left: 5px;
+  top: 10px;
+  transition: 0.2s ease all;
+  -moz-transition: 0.2s ease all;
+  -webkit-transition: 0.2s ease all;
+ }
+ 
+ ul {
+  list-style-type: none;
+  font-size: 14px ;
+  text-align: left;
+}

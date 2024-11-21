@@ -1,12 +1,10 @@
-
 import React from 'react';
 
 const Navbar = () => {
   return (
     <nav>
       <ul>
-        {/*<li><a href="/accueil">Accueil</a></li>*/}
-        <li><a href="/">Home</a></li>
+        <li><a href="/">Authentification</a></li>
       </ul>
     </nav>
   );

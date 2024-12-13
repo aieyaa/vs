@@ -1,97 +1,144 @@
 
-import { useState } from 'react'
-import {useNavigate} from 'react-router-dom'
-import './index.css'
-import api from '../api/api';
-import accueil from './accueil';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import './index.css';
+import api from '../api/api.js';
+
+
+
+
+// Fonction qui appelle l'API 
+async function getVisiteur(lelogin, lemdp) {
+  try {
+    const response = await api.get('/connexion', {
+      params: {
+        login : lelogin,
+        mdp : lemdp
+
+       // 'Content-Type': 'multipart/form-data'
+      },
+    });
+    return response;
+  } catch (err) {
+    console.error('Erreur API', err);
+    }
+}
+
+
+
+
 
 export default function App() {
-
   const navigate = useNavigate();
-  const [login, setlogin] = useState("");
-  const [password, setpassword] = useState('');
-  const [Error, setError] = useState('');
-  
-  
-  
-function handleSubmit(event) {
-  event.preventDefault();
-  navigate('/accueil',{
-    state:{
-      login : login
+  const [login, setLogin] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+
+  // Fonction pour gérer la connexion
+  async function connection(e) {
+    e.preventDefault();
+
+    // Vérifie que les champs sont remplis
+    if (!login || !password) {
+      setError('Veuillez entrer votre login et mot de passe.');
+      return;
     }
-  })
-  console.log('Vous avez appuyer sur le bouton')
+
+
+      const formData = new FormData(e.currentTarget);
+      formData.append('login', login);
+      formData.append('password', password);
+
+      console.log(formData.get("login"));
+      console.log(formData.get("password"));
+
+    
+      const response = await getVisiteur(formData) 
+      getVisiteur(formData.get('login'), formData.get('password'))
+      .then((response) => { 
+      if (response.data != null) {
+        console.log(response.data);
+        navigate('/accueil', { state: { login } });
+
+      } else {
+        setError('Authentification incorrect')
+      }
+  });
 }
 
 
-
-
-
-
-if (login =='A')  {
-  
-} else {
-console.log("login rempli")
-}
-
-if (password =='A')  {
- 
-} else {
-console.log("mdp rempli")
-}
-  
 
   return (
-    <>
-{/* Formulaire login/mot de passe  */}
-      <section className="bg-gray-50 dark:bg-gray-900">
-        <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
-          <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
-            <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
-              <img src='GSB.png' />
-              <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
-                Identification
-              </h1>
-              <form className="space-y-4 md:space-y-6" action="#" onSubmit={handleSubmit}>
-                <div>
-                  <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Login</label>
-                  <input type="text" name="login" id="login" value={login} onChange={(e) => setlogin(e.target.value)}  className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="aieya"  />
-                </div>
-                <div>
-                  <label htmlFor="password" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Password</label>
-                  <input type="password" name="password" id="password" value={password} onChange={(e) => setpassword(e.target.value)} placeholder="••••••••" className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"  />
-                </div>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-start">
-                    <div className="flex items-center h-5">
-                      <input id="remember" aria-describedby="remember" type="checkbox" className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-primary-600 dark:ring-offset-gray-800" />
-                    </div>
-                    <div className="ml-3 text-sm">
-                      <label htmlFor="remember" className="text-gray-500 dark:text-gray-300">Remember me</label>
-                    </div>
-                  </div>
-                  <a href="#" className="text-sm font-medium text-primary-600 hover:underline dark:text-primary-500">Forgot password?</a>
-                </div>
-                <button type="submit" className="w-full  bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800" 
-                
-                
-                onClick= {handleSubmit} >Sign in </button>
-                
-              
-              
-                
-                
-               
+    <section className="bg-gray-50 dark:bg-gray-900">
+      <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
+        <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
+          <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
+            <img src="GSB.png" alt="logo" />
+            <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
+              Identification
+            </h1>
+            <form className="space-y-4 md:space-y-6" onSubmit={connection}>
+              <div>
+                <label htmlFor="login" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                  Login
+                </label>
+                <input
+                  type="text"
+                  name="login"
+                  id="login"
+                  placeholder="Entrez votre login"
+                  value={login}
+                  onChange={(e) => setLogin(e.target.value)}
+                  className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                />
+              </div>
+              <div>
+                <label htmlFor="password" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                  Password
+                </label>
+                <input
+                  type="password"
+                  name="password"
+                  id="password"
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                />
+              </div>
 
-                <p className="text-sm font-light text-gray-500 dark:text-gray-400">
-                  Don't have an account yet? <a href="#" className="font-medium text-primary-600 hover:underline dark:text-primary-500">Sign up</a>
-                </p>
-              </form>
-            </div>
+              {/*Bannière d'erreur */}
+              {error && (
+                <div
+                  style={{
+                    backgroundColor: 'red',
+                    marginTop: '25px',
+                    fontSize: '15px',
+                    textAlign: 'center',
+                    padding: '8px',
+                  }}
+                >
+                  {error}
+                </div>
+              )}
+
+              <button
+                type="submit"
+                className="w-full bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+              >
+                Sign in
+              </button>
+
+              <p className="text-sm font-light text-gray-500 dark:text-gray-400">
+                Don't have an account yet?{' '}
+                <a href="#" className="font-medium text-primary-600 hover:underline dark:text-primary-500">
+                  Sign up
+                </a>
+              </p>
+            </form>
           </div>
         </div>
-      </section>
-    </>
-  )
+      </div>
+    </section>
+  );
 }

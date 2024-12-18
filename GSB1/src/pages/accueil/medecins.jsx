@@ -1,5 +1,6 @@
 import { useContext, useState } from 'react'
 import { useLocation } from 'react-router-dom';
+import BarNavbar from '../../composant/Navbar';
 import Navbar from '../../composant/Navbar';
 
 function Medecins() {
@@ -7,8 +8,7 @@ function Medecins() {
   
   return (
     <>
-    <Navbar/>
-      <h1>Medecins</h1>
+      <h1> Pages des Medecins</h1>
     </>
   )
 }

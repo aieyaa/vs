@@ -50,8 +50,8 @@ export default function App() {
       formData.append('login', login);
       formData.append('password', password);
 
-      console.log(formData.get("login"));
-      console.log(formData.get("password"));
+      //console.log(formData.get("login"));
+      //console.log(formData.get("password"));
 
     
       const response = await getVisiteur(formData) 

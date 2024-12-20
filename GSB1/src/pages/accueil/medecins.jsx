@@ -1,68 +1,93 @@
-import { useContext, useState } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom';
-import BarNavbar from '../../composant/Navbar';
-import Navbar from '../../composant/Navbar';
+
+import { useState } from 'react';
+import { Outlet, useNavigate } from 'react-router-dom';
+import api from '../../api/api';    
+import Fichemedecin from '../../composant/Fichemedecin';
 
 export default function Medecins() {
- 
   const navigate = useNavigate();
-  const [listeVisible, setlisteVisible] = useState(false); 
-  const [nomMedecin, setnomMedecin] = useState(''); 
+  const [listeVisible, setlisteVisible] = useState(false); //boolean
+  const [nomMedecin, setnomMedecin] = useState('');
   const [listeMedecin, setlisteMedecin] = useState([]);
-  const [medecin, setmedecin] = useState({}); 
-  const [version, setversion] = useState(0); 
-  
+  const [version, setversion] = useState(false); 
+  const [medecin, setmedecin] = useState({});
 
+  // appelle l'API
+  async function Medecin(lenom) {
+    try {
+      setversion(true); 
+      const response = await api.get('http://172.16.61.61/restGSB/medecins?nom=v', { // prend le param nom= il commence par v
+        params: { nom: lenom }, });
+      return response.data || []; 
+    } finally {}
+  }
 
-
-// Fonction qui appelle l'API 
-async function Medecin(lenom) {
-  try {
-    const response = await api.get('172.16.61.61/restGSB/medecins?nom=V', {
-      params: {
-        nom : lenom,
-        
-
-       // 'Content-Type': 'multipart/form-data'
-      },
-    });
-    return response;
-  } catch (err) {
-    console.error('Erreur API', err);
+  async function charger(event) {        
+    const saisie = event.target.value; 
+    setnomMedecin(saisie);
+    if (saisie) { 
+    // if (saisie > 2) // après 2 caractères
+      const results = await Medecin(saisie); 
+      setlisteMedecin(results);         // affichage des données par rapport a la saisie
+      setlisteVisible(true);
+    } else {
+      setlisteVisible(false); 
+      setlisteMedecin([]);    // affichage vide
     }
-}
-
-
-  function charger() {
-
   }
-// @param {JSON} medecin
 
+  // Récuperer les informations 
   function selectMedecin(lemedecin) {
+    console.log('Médecin sélectionné :', lemedecin);
+     //garder le nom et le prenom dans le input
+
+      // setnomMedecin ({lemedecin.nom} {lemedecin.prenom})
+     setnomMedecin(`${lemedecin.nom} ${lemedecin.prenom}`); 
+      setlisteVisible(false);
+
+      setversion(version+1)
+      navigate(''+lemedecin.id)
+
 
   }
 
-  async function RechercherRapports(){
-
-  }
+ 
 
   return (
     <>
-<form class="max-w-md mx-auto">   
-  <label htmlFor="labem"> Rechercher un médecin </label>
-    <label for="default-search" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Rechercher</label>
-    <div class="relative">
-        <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-            <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
+      <form className="max-w-md mx-auto">
+        <label htmlFor="search" className="mb-2 text-sm font-medium text-gray-900 dark:text-white">
+          Rechercher un médecin
+        </label>
+        <div className="relative">
+          <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+            <svg className="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20" >
+              <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"/>
             </svg>
+          </div>
+          <input  onChange={charger}  type="text" id="search" value={nomMedecin} 
+            className="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            placeholder="Dr Tran Isabelle"/>
         </div>
-        <input type="search" id="default-search" class="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Dr Tran Isabelle" />
-        <button type="submit" class="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Rechercher</button>
-    </div>
-</form>
+      </form> 
 
+      {listeVisible && (
+        <ul className="max-w-md mx-auto mt-4 bg-white rounded-lg shadow-lg">
+          {listeMedecin.map((medecin) => (
+            <li
+              key={medecin.id}
+              onClick={() => selectMedecin(medecin)}
+              className="p-4 border-b last:border-none cursor-pointer hover:bg-gray-100">
+              {medecin.nom} {medecin.prenom}
+            </li>
+          ))}
+        </ul>
+      )}
+      {listeVisible && listeMedecin.length === 0 && !version && (
+        <p className="text-center mt-4 text-gray-500">Aucun médecin trouvé.</p>
+      )}
+      <Outlet context = {[medecin, setmedecin]} key={version}/>
+     
     </>
-  )
+  );
 }
-

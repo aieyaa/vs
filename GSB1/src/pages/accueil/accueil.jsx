@@ -14,7 +14,7 @@ function accueil() {
   return (
     <>
     <Navbar/>
-      <h1> Bonjour, {nom} {prenom} </h1>
+      <h1 className="mb-2 text-sm font-medium text-gray-900 dark:text-white"> Bonjour, {nom} {prenom} </h1>
     <Outlet/>
     </>
   )

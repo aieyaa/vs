@@ -38,29 +38,24 @@ export default Rapport;
 */}
 
 
-import React, { createContext, useContext, useState } from 'react';
-import { useLocation } from 'react-router-dom';
 
-export const Context = createContext();
 
-export const Provider = ({ children }) => {
-  const [visiteur, setVisiteur] = useState(null);
 
-  return (
-    <Context.Provider value={{ visiteur, setVisiteur }}>
-      {children}
-    </Context.Provider>
-  );
-};
+import React, { useContext } from 'react';
+import { Context } from '../../Context/Context';
+import { useState } from 'react';
 
 function Rapport() {
-  
+ const { visiteur } = useContext(Context);
+
   return (
     <>
       <h1>Page des Rapports</h1>
-      
+      <p>Bonjour, {visiteur.nom} {visiteur.prenom}</p>
     </>
   );
 }
+
+
 
 export default Rapport;

@@ -2,10 +2,13 @@ import { useContext, useState, state } from 'react'
 import { Outlet, useLocation } from 'react-router-dom';
 import Navbar from '../../composant/Navbar';
 import BarNavbar from '../../composant/Navbar';
+import api from '../../api/api';
 
 function accueil() {
   const location = useLocation();
-  const { nom, prenom } = location.state || {}; 
+  // const { nom, prenom } = location.state || { nom: 'Inconnu', prenom: 'Inconnu' };
+  
+  const { nom, prenom } = location.state || {};
 
 
   //const location = useLocation();

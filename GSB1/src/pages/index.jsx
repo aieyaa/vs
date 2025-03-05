@@ -1,13 +1,15 @@
 
-import { useState } from 'react';
+import { useState, useContext} from 'react';
 import { useNavigate } from 'react-router-dom';
 import './index.css';
 import api from '../api/api.js';
+import { Context } from '../Context/Context.jsx';
 
 
 
 
 // Fonction qui appelle l'API 
+//Page de connexion
 async function getVisiteur(lelogin, lemdp) {
   try {
     const response = await api.get('/connexion', {
@@ -33,6 +35,7 @@ export default function App() {
   const [login, setLogin] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [visiteur, setVisiteur] = useContext  
   
 
   // Fonction pour gérer la connexion

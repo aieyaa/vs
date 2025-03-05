@@ -43,15 +43,15 @@ export default Rapport;
 
 import React, { useContext } from 'react';
 import { Context } from '../../Context/Context';
-import { useState } from 'react';
+import { useState, state} from 'react';
 
 function Rapport() {
- const { visiteur } = useContext(Context);
+  const [visiteur, setVisiteur] = useState (state? state.user: null);
 
   return (
     <>
       <h1>Page des Rapports</h1>
-      <p>Bonjour, {visiteur.nom} {visiteur.prenom}</p>
+      
     </>
   );
 }

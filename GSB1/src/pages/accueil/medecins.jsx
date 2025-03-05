@@ -10,7 +10,7 @@ export default function Medecins() {
   const [nomMedecin, setnomMedecin] = useState('');
   const [listeMedecin, setlisteMedecin] = useState([]);
   const [version, setversion] = useState(false); 
-  const [medecin, setmedecin] = useState({});
+  const [medecin, setMedecin] = useState({});
 
   // appelle l'API
   async function Medecin(lenom) {
@@ -43,6 +43,7 @@ export default function Medecins() {
 
       // setnomMedecin ({lemedecin.nom} {lemedecin.prenom})
      setnomMedecin(`${lemedecin.nom} ${lemedecin.prenom}`); 
+     setMedecin(lemedecin);
       setlisteVisible(false);
 
       setversion(version+1)
@@ -86,7 +87,7 @@ export default function Medecins() {
       {listeVisible && listeMedecin.length === 0 && !version && (
         <p className="text-center mt-4 text-gray-500">Aucun médecin trouvé.</p>
       )}
-      <Outlet context = {[medecin, setmedecin]} key={version}/>
+      <Outlet context = {[medecin, setMedecin]} key={version}/>
      
     </>
   );

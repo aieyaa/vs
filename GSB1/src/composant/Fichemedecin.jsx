@@ -1,7 +1,7 @@
 import { useContext, useState, state } from 'react'
 import { Outlet, useLocation } from 'react-router-dom';
 import Medecins from '../pages/accueil/medecins';
-import { Context } from '../Context/Context';
+// import { context } from '../context/context';
 
 function Fichemedecin({lemedecin}) {
 

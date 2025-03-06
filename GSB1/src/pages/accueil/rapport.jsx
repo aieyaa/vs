@@ -1,61 +1,27 @@
-{/*}
-import { useContext, useState, state, createContext, Children } from 'react'
-import { useLocation } from 'react-router-dom';
-import BarNavbar from '../../composant/Navbar';
-import Navbar from '../../composant/Navbar';
-import { useEffect } from 'react';
-
-
-
-export const Context = createContext()
-export const Provider = ({Children}) => {
-  const [visiteur, setVisiteur] = useState(state ? state.user : null); 
-
-
-return ( 
-  //Context.Provider value={{}}
-  {Children}
-)
-}
-
-
-
+import React, { useState, useEffect } from 'react';
+import { useUser } from '../../context/context';
 
 function Rapport() {
-const location = useLocation(state);
-// const {nom, prnom} = location.state
-//const {user} = useUser();
-
-  return (
-    <>
-      <h1> Pages des Rapports  </h1>
-        
-    </>
-  )
-}
-
-export default Rapport;
-*/}
-
-
-
-
-
-import React, { useContext } from 'react';
-import { Context } from '../../Context/Context';
-import { useState, state} from 'react';
-
-function Rapport() {
-  const [visiteur, setVisiteur] = useState (state? state.user: null);
+  // const { datavisiteur } = ();
+  const { user , datavisiteur } = useUser();
 
   return (
     <>
       <h1>Page des Rapports</h1>
-      
+
+      <p>ID : {user.id}</p>
+      <p>Nom : {user.nom}</p>
+      <p>Prénom : {user.prenom}</p>
+      <p>Adresse : {user.adresse}</p>
+      <p>Code Postale : {user.cp}</p>
+      <p>Ville : {user.ville}</p>
+
+    
+
     </>
   );
 }
 
-
-
 export default Rapport;
+
+

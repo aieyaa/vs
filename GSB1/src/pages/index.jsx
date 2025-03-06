@@ -3,7 +3,8 @@ import { useState,useContext} from 'react';
 import { useNavigate } from 'react-router-dom';
 import './index.css';
 import api from '../api/api.js';
-import { Context } from '../Context/Context.jsx';
+import { useUser } from '../context/context.jsx';
+// import { Context } from '../Context/context.jsx';
 
 
 
@@ -49,24 +50,37 @@ export default function App() {
     }
 
 
-      const formData = new FormData(e.currentTarget);
-      formData.append('login', login);
-      formData.append('password', password);
-    
-      const response = await getVisiteur(formData) 
-      getVisiteur(formData.get('login'), formData.get('password'))
-      .then((response) => { 
-      if (response.data != null) {
-        console.log(response.data);
-        console.log(response.data.nom );
-        console.log(response.data.prenom);
-        navigate('/accueil', { state: { login } });
 
-      } else {
-        setError('Authentification incorrect')
-      }
-  });
-}
+ 
+  
+  const formData = new FormData(e.currentTarget);
+  formData.append('login', login);
+  formData.append('password', password);
+
+  const response = await getVisiteur(formData) 
+  getVisiteur(formData.get('login'), formData.get('password'))
+  .then((response) => { 
+  if (response.data != null) {
+    const {nom, prenom, ville, adresse, cp, id} = response.data ;   
+    const datavisiteur = response.data;
+     console.log(" Datavisiteur : ",datavisiteur);
+    navigate('/accueil', { state: { login , nom, prenom, ville, adresse, cp, id} });
+        
+  } else {
+    setError('Authentification incorrect')
+  }
+
+
+
+});
+
+
+
+
+
+
+  }
+  
 
 
 
@@ -144,3 +158,4 @@ export default function App() {
     </section>
   );
 }
+

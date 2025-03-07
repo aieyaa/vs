@@ -26,7 +26,10 @@ export default function BarNavbar() {
       <nav className="bg-white border-gray-200 dark:bg-gray-900">
         <div className="max-w-screen-xl flex flex-wrap items-center justify-start mx-auto p-4">
           {/* Logo */}
-          <img src="/GSB.png" className="h-8 mr-6" alt="Logo" />
+          <a href="/">
+  <img src="/GSB.png" className="h-8 mr-6" alt="Logo" />
+</a>
+
 
           {/* Navigation Links */}
           <ul className="flex space-x-4">
@@ -67,12 +70,12 @@ export default function BarNavbar() {
                 <ul className="py-2" aria-labelledby="user-menu-button">
                   <li>
                     <Link to="/accueil" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white" >
-                      Dashboard
+                      Accueil
                     </Link>
                   </li>
                   <li>
                     <Link to="/" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white" >
-                      Sign out
+                      Déconnexion
                     </Link>
                   </li>
                 </ul>

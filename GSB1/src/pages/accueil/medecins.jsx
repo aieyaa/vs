@@ -56,7 +56,7 @@ export default function Medecins() {
 
   return (
     <>
-      <form className="max-w-md mx-auto">
+      <form className=" max-w-md mx-auto">
         <label htmlFor="search" className="mb-2 text-sm font-medium text-gray-900 dark:text-white">
           Rechercher un médecin
         </label>
@@ -87,6 +87,7 @@ export default function Medecins() {
       {listeVisible && listeMedecin.length === 0 && !version && (
         <p className="text-center mt-4 text-gray-500">Aucun médecin trouvé.</p>
       )}
+
       <Outlet context = {[medecin, setMedecin]} key={version}/>
      
     </>

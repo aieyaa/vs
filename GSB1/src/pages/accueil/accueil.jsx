@@ -18,7 +18,7 @@ function Accueil() {
   return (
     <>
       <Navbar />
-      <h1 className="mb-2 text-sm font-medium text-gray-900 dark:text-white">
+      <h1 className= " flex justify-center items-center mb-2 text-sm font-medium text-gray-900 dark:text-white">
         Bonjour, {nom} {prenom}
       </h1>
       <Outlet />

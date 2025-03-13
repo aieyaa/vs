@@ -16,7 +16,8 @@ export default function Medecins() {
   async function Medecin(lenom) {
     try {
       setversion(true); 
-      const response = await api.get('http://172.16.61.61/restGSB/medecins?nom=v', { // prend le param nom= il commence par v
+      // const response = await api.get('http://172.16.61.61/restGSB/medecins?nom=v', { // prend le param nom= il commence par v
+        const response = await api.get('http://172.16.61.61/restGSB/medecins', { 
         params: { nom: lenom }, });
       return response.data || []; 
     } finally {}
@@ -41,18 +42,30 @@ export default function Medecins() {
     console.log('Médecin sélectionné :', lemedecin);
      //garder le nom et le prenom dans le input
 
+    
+
       // setnomMedecin ({lemedecin.nom} {lemedecin.prenom})
      setnomMedecin(`${lemedecin.nom} ${lemedecin.prenom}`); 
      setMedecin(lemedecin);
-      setlisteVisible(false);
 
-      setversion(version+1)
-      navigate(''+lemedecin.id)
+    //  synchroniser les clés (clé indice, clé nommés)
+    //  const tableau = Object.values(lemedecin); 
+    //  console.log('Tableau des valeurs du médecin :', tableau);
+
+
+
+      setlisteVisible(false);
+    setversion((version) => version + 1);
+    navigate(`${lemedecin.id}`); // Naviguer vers l'ID du médecin
+  
+
+      // setversion(version+1)
+      // navigate(''+lemedecin.id)
 
 
   }
 
- 
+
 
   return (
     <>

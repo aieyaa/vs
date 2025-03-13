@@ -1,34 +1,69 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import axios from 'axios';
+import api from "../api/api.js";
 
 function Fiche({ leMedecin }) {
 
     const [medecin, setMedecin] = leMedecin;
     const [updateMedecinSuccess, setUpdateMedecinSuccess] = useState()
 
+// Synchroniser les clés 
+    // function synchroniserClesValeurs(params) {
+    //     const valeursSynchro = {
+    //         clesNumeriques: {},
+    //         clesNommes: {},
+    //     };
+    
+    //     for (const key in params) {
+    //         if (Object.hasOwnProperty.call(params, key)) {
+    //             const value = params[key];
+                
+    //             // Vérifiez si la clé est numérique
+    //             if (!isNaN(key)) {
+    //                 valeursSynchro.clesNumeriques[key] = value;
+    //             } else {
+    //                 valeursSynchro.clesNommes[key] = value;
+    //             }
+    //         }
+    //     }
+    
+    //     // Combine les objets synchronisés en un seul (optionnel)
+    //     return { ...valeursSynchro.clesNumeriques, ...valeursSynchro.clesNommes };
+    // }
+
+
+
 
 //modifier les informations du médecin 
-
-
     function updateMedecin(e) {
         e.preventDefault();
         setUpdateMedecin(medecin);
     }
     
+    // params = les données du medecin : lemedecin
     async function setUpdateMedecin(params) {
-        console.log(params);
-        const lien = '/restGSB/majMedecin';
+        console.log("Données update : ", params);
+
+
+        // synchroniser les clés et les valeurs (indice et le nom) 
+        // const tableau = Object.values(params); 
+        // console.log('Tableau des valeurs du médecin :', tableau);
+
+        // Synchroniser les valeurs 
+        // const valeursSynchro = synchroniserClesValeurs(params);
+        // console.log('Valeurs synchronisées du médecin :', valeursSynchro);
+
+        const lienUrl = '/restGSB/majMedecin';
         const headers = 
-        {
-            headers: {
+        { headers: {
                 'Content-Type': 'application/json'
-            }
-        };
+            }};
 
         try {
-            const response = await axios.put(lien, params, headers 
+            const response = await api.put(lienUrl, params, headers 
         );
+        // console.log(response);
     
             if (response.status === 200) {
                 setUpdateMedecinSuccess(true); 
@@ -37,14 +72,15 @@ function Fiche({ leMedecin }) {
                 console.error('Erreur lors de la mise à jour.');
                 
             }
+            return response;
+            
         } catch (error) {
-            console.error('Erreur réseau :', error);
+            console.error('Erreur réseau :', error.response);
             setUpdateMedecinSuccess(false);
         }
     }
     
 
-    
 
     return (
         <>
@@ -71,13 +107,13 @@ function Fiche({ leMedecin }) {
         <div>
             <label htmlFor="first_name" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Téléphone</label>
             <input type="text" id="tel" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
-             value={medecin.tel}
+             value={medecin.tel || ''}
              onChange={(e) => setMedecin({ ...medecin, tel: e.target.value })}/>
         </div>
         <div>
             <label htmlFor="first_name" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Commentaire</label>
             <input type="text" id="commentaire" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
-             value={medecin.specialitecomplementaire}
+             value={medecin.specialitecomplementaire || ''}
              onChange={(e) => setMedecin({ ...medecin, specialitecomplementaire: e.target.value })}/>
         </div>
 
@@ -101,6 +137,16 @@ function Fiche({ leMedecin }) {
 
 // Fiche rapports 
 function Rappports({idMedecin}) {
+
+    const [rapportsMedecin, setRapportsMedecin] = useState([]);
+
+
+    useEffect(() => {
+        async function rapports() {
+
+        }
+        rapports();
+    }, [idMedecin])
 
     return (
         <h1> Fiche Rapports </h1>

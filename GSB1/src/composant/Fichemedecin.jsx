@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import { useOutletContext } from "react-router-dom";
-import axios from 'axios';
 import api from "../api/api.js";
+
 
 function Fiche({ leMedecin }) {
 
     const [medecin, setMedecin] = leMedecin;
+    // const [medecin, setMedecin] = useState(leMedecin);
     const [updateMedecinSuccess, setUpdateMedecinSuccess] = useState()
 
 // Synchroniser les clés 
@@ -36,9 +37,10 @@ function Fiche({ leMedecin }) {
 
 
 //modifier les informations du médecin 
-    function updateMedecin(e) {
+   async function updateMedecin(e) {
         e.preventDefault();
-        setUpdateMedecin(medecin);
+        // setUpdateMedecin(medecin);
+        await setUpdateMedecin(medecin);
     }
     
     // params = les données du medecin : lemedecin
@@ -55,16 +57,16 @@ function Fiche({ leMedecin }) {
         // console.log('Valeurs synchronisées du médecin :', valeursSynchro);
 
         const lienUrl = '/restGSB/majMedecin';
-        const headers = 
+        const type = 
         { headers: {
                 'Content-Type': 'application/json'
             }};
 
         try {
-            const response = await api.put(lienUrl, params, headers 
+            const response = await api.put(lienUrl, params, type 
         );
-        // console.log(response);
-    
+    console.log('response.data :', response.data); 
+    //affiche rien, pas d'enregistrement dans la base de données 
             if (response.status === 200) {
                 setUpdateMedecinSuccess(true); 
             } else {
@@ -90,7 +92,11 @@ function Fiche({ leMedecin }) {
              <label htmlFor="first_name" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"> Nom</label>
              <input type="text" id="nom" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
              value={medecin.nom}
-             onChange={(e) => setMedecin({ ...medecin, nom: e.target.value })} />
+             onChange={(e) => setMedecin({ ...medecin, nom: e.target.value })} 
+            
+             
+             
+             />
         </div>
         <div>
             <label htmlFor="first_name" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"> Prénom</label>
@@ -136,23 +142,88 @@ function Fiche({ leMedecin }) {
 }
 
 // Fiche rapports 
-function Rappports({idMedecin}) {
-
-    const [rapportsMedecin, setRapportsMedecin] = useState([]);
-
+function Rapports({ idMedecin }) {
+    const [rapportsMedecin, setRapportsMedecin] = useState([]); // Stockage des rapports
+    const [error, setError] = useState(null); 
+    const [loading, setLoading] = useState(false); // Indicateur chargement
 
     useEffect(() => {
-        async function rapports() {
-
+        // Fonction pour récupérer les rapports depuis l'API
+        async function fetchRapports() {
+            setLoading(true); // Début du chargement
+            try {
+                const response = await api.get(`/rapports/${idMedecin}`); // Appel à l'API
+                const data = response.data; // les données dans `data`
+                // console.log('Rapports Stockés', data);
+                setRapportsMedecin(data); // Mise à jour des rapports
+            } catch (err) {
+                setError(err.message); 
+            } finally {
+                setLoading(false); // Fin du chargement
+            }
         }
-        rapports();
-    }, [idMedecin])
+
+        if (idMedecin) {
+            fetchRapports(); // Appel de la fonction si un ID est fourni
+        }
+    }, [idMedecin]); 
 
     return (
-        <h1> Fiche Rapports </h1>
-    ) 
-    
+        
+        <div>
+            {loading && <p>Chargement des rapports...</p>}
+            
+            {error && <p style={{ color: 'red' }}>Erreur : {error}</p>}
+
+            {!loading && rapportsMedecin.length === 0 && !error && (
+                <p>Aucun rapport trouvé pour ce médecin.</p>
+            )}
+
+            {/* Affichage des rapports */}
+<div className="relative overflow-x-auto">
+    <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+        <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+            <tr>
+                <th scope="col" class="px-6 py-3">
+                    Date
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Motif
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Bilan
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Nom 
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Prénom 
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+  {rapportsMedecin.map((rapport) => (
+    <tr
+      key={rapport.id}
+      className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200"
+    >
+      <td className="px-6 py-4">{rapport.date}</td>
+      <td className="px-6 py-4">{rapport.motif}</td>
+      <td className="px-6 py-4">{rapport.bilan}</td>
+      <td className="px-6 py-4">{rapport.nom}</td>
+      <td className="px-6 py-4">{rapport.prenom}</td>
+    </tr>
+  ))}
+
+            
+        </tbody>
+    </table>
+</div>
+
+        </div>
+    );
 }
+
 
 
 
@@ -183,7 +254,7 @@ export default function Fichemedecin() {
     affichage == 'fiche' ? 
     <Fiche leMedecin={[medecin, setMedecin]} />
     : 
-    <Rappports idMedecin={medecin.id}/>
+    <Rapports idMedecin={medecin.id}/>
 }
 
 

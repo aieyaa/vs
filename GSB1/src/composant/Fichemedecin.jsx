@@ -9,32 +9,6 @@ function Fiche({ leMedecin }) {
     // const [medecin, setMedecin] = useState(leMedecin);
     const [updateMedecinSuccess, setUpdateMedecinSuccess] = useState()
 
-// Synchroniser les clés 
-    // function synchroniserClesValeurs(params) {
-    //     const valeursSynchro = {
-    //         clesNumeriques: {},
-    //         clesNommes: {},
-    //     };
-    
-    //     for (const key in params) {
-    //         if (Object.hasOwnProperty.call(params, key)) {
-    //             const value = params[key];
-                
-    //             // Vérifiez si la clé est numérique
-    //             if (!isNaN(key)) {
-    //                 valeursSynchro.clesNumeriques[key] = value;
-    //             } else {
-    //                 valeursSynchro.clesNommes[key] = value;
-    //             }
-    //         }
-    //     }
-    
-    //     // Combine les objets synchronisés en un seul (optionnel)
-    //     return { ...valeursSynchro.clesNumeriques, ...valeursSynchro.clesNommes };
-    // }
-
-
-
 
 //modifier les informations du médecin 
    async function updateMedecin(e) {
@@ -47,14 +21,6 @@ function Fiche({ leMedecin }) {
     async function setUpdateMedecin(params) {
         console.log("Données update : ", params);
 
-
-        // synchroniser les clés et les valeurs (indice et le nom) 
-        // const tableau = Object.values(params); 
-        // console.log('Tableau des valeurs du médecin :', tableau);
-
-        // Synchroniser les valeurs 
-        // const valeursSynchro = synchroniserClesValeurs(params);
-        // console.log('Valeurs synchronisées du médecin :', valeursSynchro);
 
         const lienUrl = '/restGSB/majMedecin';
         const type = 
@@ -168,6 +134,18 @@ function Rapports({ idMedecin }) {
         }
     }, [idMedecin]); 
 
+    // Conversion de date jj-mm-aaaa
+    function formatDate(dateString) {
+        const date = new Date(dateString);
+        // Extraire le jour, le mois et l'année
+        const day = String(date.getDate()).padStart(2, '0'); 
+        const month = String(date.getMonth() + 1).padStart(2, '0'); // Les mois commencent à 0
+        const year = date.getFullYear();
+    
+        return `${day}-${month}-${year}`; // Retourne sous le format
+    }
+    
+
     return (
         
         <div>
@@ -184,39 +162,33 @@ function Rapports({ idMedecin }) {
     <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
         <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
             <tr>
-                <th scope="col" class="px-6 py-3">
+                <th scope="col" className="px-6 py-3">
                     Date
                 </th>
-                <th scope="col" class="px-6 py-3">
+                <th scope="col" className="px-6 py-3">
                     Motif
                 </th>
-                <th scope="col" class="px-6 py-3">
+                <th scope="col" className="px-6 py-3">
                     Bilan
                 </th>
-                <th scope="col" class="px-6 py-3">
-                    Nom 
-                </th>
-                <th scope="col" class="px-6 py-3">
-                    Prénom 
+                <th scope="col" className="px-6 py-3">
+                   Nom et Prénom 
                 </th>
             </tr>
         </thead>
-        <tbody>
+<tbody>
   {rapportsMedecin.map((rapport) => (
     <tr
-      key={rapport.id}
-      className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200"
-    >
-      <td className="px-6 py-4">{rapport.date}</td>
+      key={rapport.id || `rapport-${rapport}`}
+      className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200">
+      <td className="px-6 py-4">{formatDate(rapport.date)}</td> 
       <td className="px-6 py-4">{rapport.motif}</td>
       <td className="px-6 py-4">{rapport.bilan}</td>
-      <td className="px-6 py-4">{rapport.nom}</td>
-      <td className="px-6 py-4">{rapport.prenom}</td>
+      <td className="px-6 py-4">{rapport.nom} {rapport.prenom}</td>
     </tr>
   ))}
+</tbody>
 
-            
-        </tbody>
     </table>
 </div>
 

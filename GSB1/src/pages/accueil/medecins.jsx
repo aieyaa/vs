@@ -48,20 +48,9 @@ export default function Medecins() {
      setnomMedecin(`${lemedecin.nom} ${lemedecin.prenom}`); 
      setMedecin(lemedecin);
 
-    //  synchroniser les clés (clé indice, clé nommés)
-    //  const tableau = Object.values(lemedecin); 
-    //  console.log('Tableau des valeurs du médecin :', tableau);
-
-
-
       setlisteVisible(false);
     setversion((version) => version + 1);
     navigate(`${lemedecin.id}`); // Naviguer vers l'ID du médecin
-  
-
-      // setversion(version+1)
-      // navigate(''+lemedecin.id)
-
 
   }
 

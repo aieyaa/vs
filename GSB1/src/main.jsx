@@ -6,16 +6,21 @@ import Accueil from './pages/accueil/accueil.jsx';
 import Rapport from './pages/accueil/rapport.jsx';
 import Medecins from './pages/accueil/medecins.jsx';
 import Fichemedecin from './composant/Fichemedecin.jsx';
+
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
-
 import { UserProvider } from './context/context.jsx';
+import AjouterRapport from './composant/ajouterRapport.jsx';
 
 const router = createBrowserRouter([
   { path: '/', element: <App /> },
   { path: 'accueil', element: <Accueil />,
     children: [
-      { path: 'rapport', element: <Rapport /> },
+      { path: 'rapport', element: <Rapport />,
+        children: [
+          { path: ':id', element: <AjouterRapport/>}
+        ]},
+
       { path: 'medecins', element: <Medecins />,
         children: [
           { path: ':id', element: <Fichemedecin /> },

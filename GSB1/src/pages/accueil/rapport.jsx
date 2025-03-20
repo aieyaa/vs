@@ -6,19 +6,6 @@ import { Outlet, useNavigate } from 'react-router-dom';
 import AjouterRapport from '../../composant/ajouterRapport.jsx';
 
 
-// function Ajouter() {
-
-//   return (
-//     <>
-//       <h1>Ajouter un Rapport</h1>
-
-    
-
-//     </>
-//   );
-// }
-
-
 function Ajouter() {
   const [listeVisible, setlisteVisible] = useState(false); // boolean
   const [nomMedecin, setnomMedecin] = useState("");
@@ -107,14 +94,88 @@ function Ajouter() {
 
 //
 
-function Modifier() {
+function Modifier({ visiteur }) {
+  const [date, setDate] = useState(""); // Date du rapport recherché
+  const [listeRapports, setListeRapports] = useState([]);
+  const [rapport, setRapport] = useState({});
+  const [majRapportSucces, setMajRapportSucces] = useState(null);
+
+  // Valider que la date est au format YYYY-MM-DD
+  const regex_yyyymmdd = /^\d{4}-\d{2}-\d{2}$/;
+
+  // Charger les rapports correspondant à la date donnée
+  async function chargerRapports() {
+    if (regex_yyyymmdd.test(date)) {
+      try {
+        const response = await axios.get(`http://172.16.61.61/restGSB/?date=${date}`);
+        setListeRapports(response.data);
+      } catch (error) {
+        console.error("Erreur lors du chargement des rapports :", error);
+      }
+    } else {
+      alert("Veuillez entrer une date valide au format YYYY-MM-DD.");
+    }
+  }
+
+  // Fonction pour modifier un rapport
+  async function modifierRapport(updatedRapport) {
+    try {
+      const response = await axios.put(`/api/rapports/${updatedRapport.id}`, updatedRapport);
+      setMajRapportSucces("Rapport mis à jour avec succès !");
+    } catch (error) {
+      console.error("Erreur lors de la mise à jour du rapport :", error);
+      setMajRapportSucces("Échec de la mise à jour du rapport.");
+    }
+  }
 
   return (
     <>
-    <h1> Modifier un Rapport </h1>
+      <label
+        htmlFor="date"
+        className="mb-2 text-sm font-medium text-gray-900 dark:text-white"
+      >
+        Modifier un rapport
+      </label>
+      <div className="relative mb-4">
+        <input
+          type="date"
+          id="date"
+          value={date}
+          onChange={(e) => setDate(e.target.value)}
+          className="block w-full p-4 border border-gray-300 rounded-lg bg-gray-50"
+        />
+        <button
+          onClick={chargerRapports}
+          className="mt-2 px-4 py-2 bg-blue-500 text-white rounded"
+        >
+          Charger les rapports
+        </button>
+      </div>
+
+      {listeRapports.length > 0 && (
+        <ul>
+          {listeRapports.map((r) => (
+            <li key={r.id}>
+              <h3>{r.titre}</h3>
+              {/* Exemple d'édition d'un champ */}
+              <textarea
+                value={r.description}
+                onChange={(e) => setRapport({ ...r, description: e.target.value })}
+              />
+              <button onClick={() => modifierRapport(r)} className="ml-2 px-4 py-2 bg-green-500 text-white rounded">
+                Mettre à jour
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+
+      {majRapportSucces && <p>{majRapportSucces}</p>}
     </>
-  )
+  );
 }
+
+
  
 
 export default function Rapport() {

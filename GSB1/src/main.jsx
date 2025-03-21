@@ -11,6 +11,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
 import { UserProvider } from './context/context.jsx';
 import AjouterRapport from './composant/ajouterRapport.jsx';
+import ModifierRapport from './composant/modifierRapport.jsx';
 
 const router = createBrowserRouter([
   { path: '/', element: <App /> },
@@ -18,7 +19,8 @@ const router = createBrowserRouter([
     children: [
       { path: 'rapport', element: <Rapport />,
         children: [
-          { path: ':id', element: <AjouterRapport/>}
+          { path: ':id', element: <AjouterRapport/>},
+          { path: ':id', element: <ModifierRapport/>}
         ]},
 
       { path: 'medecins', element: <Medecins />,

@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useUser } from '../../context/context';
 import api from '../../api/api.js';
 import { Outlet, useNavigate } from 'react-router-dom';
-// import { AjouterRapport } from '../../composant/ajouterRapport.jsx';
 import AjouterRapport from '../../composant/ajouterRapport.jsx';
+import ModifierRapport from '../../composant/modifierRapport.jsx';
+
 
 
 function Ajouter() {
@@ -52,19 +53,11 @@ function Ajouter() {
         <form className="max-w-md mx-auto">
           <label
             htmlFor="search"
-            className="mb-2 text-sm font-medium text-gray-900 dark:text-white"
-          >
+            className="mb-2 text-sm font-medium text-gray-900 dark:text-white">
             Rechercher un médecin
           </label>
           <div className="relative">
-            <input
-              onChange={charger}
-              type="text"
-              id="search"
-              value={nomMedecin}
-              className="block w-full p-4 border border-gray-300 rounded-lg bg-gray-50"
-              placeholder="Dr Tran Isabelle"
-            />
+            <input onChange={charger} type="text" id="search" value={nomMedecin} className="block w-full p-4 border border-gray-300 rounded-lg bg-gray-50" placeholder="Dr Tran Isabelle"/>
           </div>
         </form>
       ) : (
@@ -75,11 +68,7 @@ function Ajouter() {
       {listeVisible && (
         <ul className="max-w-md mx-auto mt-4 bg-white rounded-lg shadow-lg">
           {listeMedecin.map((medecin) => (
-            <li
-              key={medecin.id}
-              onClick={() => selectMedecin(medecin)}
-              className="p-4 border-b last:border-none cursor-pointer hover:bg-gray-100"
-            >
+            <li key={medecin.id} onClick={() => selectMedecin(medecin)} className="p-4 border-b last:border-none cursor-pointer hover:bg-gray-100">
               {medecin.nom} {medecin.prenom}
             </li>
           ))}
@@ -95,88 +84,58 @@ function Ajouter() {
 //
 
 function Modifier({ visiteur }) {
-  const [date, setDate] = useState(""); // Date du rapport recherché
-  const [listeRapports, setListeRapports] = useState([]);
-  const [rapport, setRapport] = useState({});
-  const [majRapportSucces, setMajRapportSucces] = useState(null);
+  const [dateVisite, setDateVisite] = useState("");
+  const [showModifierRapport, setShowModifierRapport] = useState(false);
 
-  // Valider que la date est au format YYYY-MM-DD
-  const regex_yyyymmdd = /^\d{4}-\d{2}-\d{2}$/;
+  const formatDate = (date) => {
+    if (date) {
+        const [year, month, day] = date.split("-");
+        return `${year}-${month}-${day}`; // Format yyyy-mm-dd
+    }
+    return "";
+};
 
-  // Charger les rapports correspondant à la date donnée
-  async function chargerRapports() {
-    if (regex_yyyymmdd.test(date)) {
-      try {
-        const response = await axios.get(`http://172.16.61.61/restGSB/?date=${date}`);
-        setListeRapports(response.data);
-      } catch (error) {
-        console.error("Erreur lors du chargement des rapports :", error);
+
+  async function chargerRapports(date) {
+      if (dateVisite) {
+          const formattedDate = formatDate(dateVisite);
+          console.log("Date formatée : ", formattedDate);
+          setShowModifierRapport(true); // Afficher le composant ModifierRapport
+          //appelle a la fonction rechercherrapport dans ModifierRapport
       }
-    } else {
-      alert("Veuillez entrer une date valide au format YYYY-MM-DD.");
-    }
-  }
-
-  // Fonction pour modifier un rapport
-  async function modifierRapport(updatedRapport) {
-    try {
-      const response = await axios.put(`/api/rapports/${updatedRapport.id}`, updatedRapport);
-      setMajRapportSucces("Rapport mis à jour avec succès !");
-    } catch (error) {
-      console.error("Erreur lors de la mise à jour du rapport :", error);
-      setMajRapportSucces("Échec de la mise à jour du rapport.");
-    }
   }
 
   return (
-    <>
-      <label
-        htmlFor="date"
-        className="mb-2 text-sm font-medium text-gray-900 dark:text-white"
-      >
-        Modifier un rapport
-      </label>
-      <div className="relative mb-4">
-        <input
-          type="date"
-          id="date"
-          value={date}
-          onChange={(e) => setDate(e.target.value)}
-          className="block w-full p-4 border border-gray-300 rounded-lg bg-gray-50"
-        />
-        <button
-          onClick={chargerRapports}
-          className="mt-2 px-4 py-2 bg-blue-500 text-white rounded"
-        >
-          Charger les rapports
-        </button>
-      </div>
-
-      {listeRapports.length > 0 && (
-        <ul>
-          {listeRapports.map((r) => (
-            <li key={r.id}>
-              <h3>{r.titre}</h3>
-              {/* Exemple d'édition d'un champ */}
-              <textarea
-                value={r.description}
-                onChange={(e) => setRapport({ ...r, description: e.target.value })}
-              />
-              <button onClick={() => modifierRapport(r)} className="ml-2 px-4 py-2 bg-green-500 text-white rounded">
-                Mettre à jour
+      <>
+          <div>
+              <label
+                  htmlFor="date"
+                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                  Chercher un rapport
+              </label>
+              <input type="date" id="date" value={dateVisite} onChange={(e) => setDateVisite(e.target.value)}
+               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
+                  required />
+              <button
+                  onClick={chargerRapports} className="mt-2 bg-blue-500 text-white py-1 px-4 rounded">
+                  Charger les Rapports
               </button>
-            </li>
-          ))}
-        </ul>
-      )}
-
-      {majRapportSucces && <p>{majRapportSucces}</p>}
-    </>
+          </div>
+          {showModifierRapport && <ModifierRapport />}
+      </>
   );
 }
 
 
- 
+
+
+
+
+
+
+
+
+//
 
 export default function Rapport() {
   // const [medecin, setMedecin] = useOutletContext();
